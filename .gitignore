@@ -1,0 +1,8 @@
+*.iml
+*.class
+*.bak
+*.uml
+*.log
+.idea/*
+**/target/*
+**/logs/*
