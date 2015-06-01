@@ -1,18 +1,16 @@
 package taifex.downloader;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.log4j.Logger;
 import taifex.model.pojo.TbOpHis;
 import taifex.model.pojo.TbOpHisPK;
 import taifex.storage.Storage;
-import taifex.util.Util;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.log4j.Logger;
 
 /**
  * @author Harvey
