@@ -13,7 +13,6 @@ import taifex.storage.Storage;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
  */
 public class OptionDwner extends AbstractDownloader {
     private static final Logger logger = Logger.getLogger(OptionDwner.class);
-    private static final String commodity = "TXO";
+    private static final String commodity = "all";
 
 
     OptionDwner(URL url, Storage storage) {

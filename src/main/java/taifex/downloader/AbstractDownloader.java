@@ -42,7 +42,6 @@ public abstract class AbstractDownloader implements Downloader {
     protected LocalDate endDate;
     protected LocalDate fetchStart;
     protected LocalDate fetchEnd;
-    protected Calendar oneMonCal;
     protected URL url;
     private Downloader dwner = this;
 
@@ -130,12 +129,12 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected String getFetchStart() {
-        return fetchStart.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        return fetchStart.format(DateTimeFormatter.ofPattern(datePattern));
     }
 
     protected String getFetchEnd() {
         this.fetchEnd = fetchStart.with(lastDayOfMonth());
-        return fetchEnd.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        return fetchEnd.format(DateTimeFormatter.ofPattern(datePattern));
     }
 
     @Override

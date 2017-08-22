@@ -7,7 +7,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" threshold="all" debug="false" >
 
     <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="log/TradeSystem.log"/>
+        <param name="File" value="log/taifex-downloader.log"/>
         <param name="DatePattern" value="'.'yyyyMMdd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="DEBUG"/>

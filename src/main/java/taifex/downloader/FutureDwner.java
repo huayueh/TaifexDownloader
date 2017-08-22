@@ -13,7 +13,6 @@ import taifex.storage.Storage;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
  */
 public class FutureDwner extends AbstractDownloader {
     private static final Logger logger = Logger.getLogger(FutureDwner.class);
-    private static final String commodity = "TX";
+    private static final String commodity = "all";
 
 
     public FutureDwner(URL url, Storage storage) {

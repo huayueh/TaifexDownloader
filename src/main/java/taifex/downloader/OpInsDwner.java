@@ -24,7 +24,7 @@ import java.util.List;
 class OpInsDwner extends AbstractDownloader {
 
     private static final Logger logger = Logger.getLogger(OpInsDwner.class);
-    private static final String commodity = "TXO";
+    private static final String commodity = "";
 
     public OpInsDwner(URL url, Storage storage) {
         super(url, storage);
