@@ -1,7 +1,7 @@
 package taifex.downloader;
 
 import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * User: Harvey
@@ -16,7 +16,7 @@ public interface Downloader {
 
     void update();
 
-    Date getCurrentTime();
+    LocalDateTime getCurrentTime();
 
     String getName();
 

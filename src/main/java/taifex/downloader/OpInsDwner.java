@@ -14,6 +14,7 @@ import taifex.storage.Storage;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +36,8 @@ class OpInsDwner extends AbstractDownloader {
     protected String getParams() {
         String ret = url.toExternalForm();
 
-        String sDate = getStartDate();
-        String eDate = getEndDate();
+        String sDate = getFetchStart();
+        String eDate = getFetchEnd();
 
         String[] sDateAry = StringUtils.split(sDate, "/");
         String[] eDateAry = StringUtils.split(eDate, "/");
@@ -61,8 +62,8 @@ class OpInsDwner extends AbstractDownloader {
 
     @Override
     protected List<NameValuePair> postPayload() {
-        String sDate = getStartDate();
-        String eDate = getEndDate();
+        String sDate = getFetchStart();
+        String eDate = getFetchEnd();
 
         String[] sDateAry = StringUtils.split(sDate, "/");
         String[] eDateAry = StringUtils.split(eDate, "/");

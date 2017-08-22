@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +38,10 @@ public abstract class AbstractDownloader implements Downloader {
     protected String firstLine;
     protected Calendar calStart;
     protected Calendar calEnd;
+    protected LocalDate startDate;
+    protected LocalDate endDate;
+    protected LocalDate fetchStart;
+    protected LocalDate fetchEnd;
     protected Calendar oneMonCal;
     protected URL url;
     private Downloader dwner = this;
@@ -69,11 +76,15 @@ public abstract class AbstractDownloader implements Downloader {
 
     @Override
     public final void setStart(int sY, int sM, int sD) {
+        this.startDate = LocalDate.of(sY, sM, sD);
+        this.fetchStart = this.startDate;
+        this.fetchEnd = this.startDate;
         this.calStart.set(sY, sM, sD);
     }
 
     @Override
     public final void setEnd(int eY, int eM, int eD) {
+        this.endDate = LocalDate.of(eY, eM, eD);
         this.calEnd.set(eY, eM, eD);
     }
 
@@ -82,7 +93,7 @@ public abstract class AbstractDownloader implements Downloader {
         if (httpClient == null)
             throw new IllegalStateException("Null HttpClient");
 
-        while (calStart.getTimeInMillis() < calEnd.getTimeInMillis()) {
+        while (fetchEnd.isBefore(endDate)) {
             InputStream is = null;
             HttpPost httpMsg = new HttpPost(getParams());
 
@@ -97,7 +108,7 @@ public abstract class AbstractDownloader implements Downloader {
                 }
 
                 if (is != null && storage.save(is, this)) {
-                    setDownloadTime();
+                    setFetched();
                 }
             } catch (IOException ex) {
                 logger.error("", ex);
@@ -118,36 +129,18 @@ public abstract class AbstractDownloader implements Downloader {
         download();
     }
 
-    protected String getStartDate() {
-        int sYear = calStart.get(Calendar.YEAR);
-        int sMonth = calStart.get(Calendar.MONTH);
-        int sDate = calStart.get(Calendar.DATE);
-        return sYear + "/" + (sMonth + 1) + "/" + sDate;
+    protected String getFetchStart() {
+        return fetchStart.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
 
-    protected String getEndDate() {
-        oneMonCal = getOneMon();
-        int eYear = oneMonCal.get(Calendar.YEAR);
-        int eMonth = oneMonCal.get(Calendar.MONTH);
-        int eDate = oneMonCal.get(Calendar.DATE);
-        return eYear + "/" + (eMonth + 1) + "/" + eDate;
-    }
-
-    private Calendar getOneMon() {
-//        LocalDate sDate = LocalDate.ofEpochDay(calStart.getTimeInMillis());
-//        LocalDate eDate = sDate.with(lastDayOfMonth());
-
-        Calendar cal = (Calendar) calStart.clone();
-        cal.add(Calendar.DATE, 20);
-        if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
-            cal = Calendar.getInstance();
-        }
-        return cal;
+    protected String getFetchEnd() {
+        this.fetchEnd = fetchStart.with(lastDayOfMonth());
+        return fetchEnd.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
 
     @Override
-    public Date getCurrentTime() {
-        return calStart.getTime();
+    public LocalDateTime getCurrentTime() {
+        return fetchEnd.atTime(LocalTime.MAX);
     }
 
     @Override
@@ -164,9 +157,8 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected abstract List<NameValuePair> postPayload();
 
-    protected void setDownloadTime() {
-        calStart.setTime(oneMonCal.getTime());
-        calStart.add(Calendar.DATE, 1);
+    protected void setFetched() {
+        fetchStart = fetchEnd.plusDays(1);
     }
 
 }

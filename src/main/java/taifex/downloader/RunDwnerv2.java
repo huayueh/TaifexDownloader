@@ -16,7 +16,8 @@ import java.util.logging.Logger;
 public class RunDwnerv2 {
 
     public static void main(String arg[]){
-        Storage storage = new FileStorage("~/Document/Taifex");
+        Storage storage = new FileStorage("target/Taifex");
+//        Storage storage = new FileStorage("~/Document/Taifex");
 //        Storage storage = new DatabaseStorage();
         Downloader downloader = null;
         
@@ -56,8 +57,8 @@ public class RunDwnerv2 {
             Logger.getLogger(RunDwnerv2.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        downloader.setStart(1998, 6, 21);
-        downloader.setEnd(2017, 7, 20);
+        downloader.setStart(1998, 7, 21);
+        downloader.setEnd(2017, 8, 20);
         downloader.download();
     }
 }

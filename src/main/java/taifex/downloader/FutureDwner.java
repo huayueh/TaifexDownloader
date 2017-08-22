@@ -13,6 +13,7 @@ import taifex.storage.Storage;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +35,8 @@ public class FutureDwner extends AbstractDownloader {
     protected String getParams() {
         String ret = url.toExternalForm();
 
-        String sDate = getStartDate();
-        String eDate = getEndDate();
+        String sDate = getFetchStart();
+        String eDate = getFetchEnd();
 
         URIBuilder builder = new URIBuilder().setPath(ret).
                 addParameter("DATA_DATE", sDate).
@@ -53,8 +54,8 @@ public class FutureDwner extends AbstractDownloader {
     }
 
     public List<NameValuePair> postPayload() {
-        String sDate = getStartDate();
-        String eDate = getEndDate();
+        String sDate = getFetchStart();
+        String eDate = getFetchEnd();
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("DATA_DATE", sDate));

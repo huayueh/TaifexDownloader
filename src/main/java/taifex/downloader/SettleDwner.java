@@ -13,6 +13,7 @@ import taifex.storage.Storage;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 
@@ -33,8 +34,8 @@ class SettleDwner extends AbstractDownloader {
     protected String getParams() {
         String ret = url.toExternalForm();
 
-        String sDate = getStartDate();
-        String eDate = getEndDate();
+        String sDate = getFetchStart();
+        String eDate = getFetchEnd();
 
         String[] sDateAry = StringUtils.split(sDate, "/");
         String[] eDateAry = StringUtils.split(eDate, "/");
@@ -81,7 +82,7 @@ class SettleDwner extends AbstractDownloader {
     }
 
     @Override
-    protected void setDownloadTime() {
+    protected void setFetched() {
         calStart.add(Calendar.MONTH, 1);
     }
 }

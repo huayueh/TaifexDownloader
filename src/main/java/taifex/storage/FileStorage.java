@@ -6,6 +6,7 @@ import taifex.downloader.Downloader;
 
 
 import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -23,7 +24,7 @@ public class FileStorage implements Storage {
     @Override
     public boolean save(InputStream is, Downloader downloader) {
         try {
-            File targetFile = new File(ROOT_PATH + File.pathSeparator + downloader.getName() + File.pathSeparator + downloader.getCurrentTime());
+            File targetFile = new File(ROOT_PATH + File.separator + downloader.getName() + File.separator + downloader.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy_MM")) + ".csv");
             FileUtils.copyInputStreamToFile(is, targetFile);
             return true;
         } catch (IOException e) {
