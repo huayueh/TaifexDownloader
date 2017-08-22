@@ -2,31 +2,41 @@ package taifex.downloader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.log4j.Logger;
 import taifex.storage.Storage;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-public abstract class AbstractDownloader extends Thread implements Downloader {
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+
+public abstract class AbstractDownloader implements Downloader {
     private static final Logger logger = Logger.getLogger(AbstractDownloader.class);
     private final Storage storage;
-    private HttpClient httpClient = HttpClients.createDefault();
+    private HttpClient httpClient;
     protected String datePattern = "yyyy/MM/dd";
-    protected String table;
+    protected String name;
     protected String firstLine;
     protected Calendar calStart;
     protected Calendar calEnd;
     protected Calendar oneMonCal;
     protected URL url;
-    protected String props;
-    protected boolean bPost = true;
     private Downloader dwner = this;
 
     public AbstractDownloader(URL url, Storage storage) {
@@ -34,30 +44,27 @@ public abstract class AbstractDownloader extends Thread implements Downloader {
         this.url = url;
         this.calStart = Calendar.getInstance();
         this.calEnd = Calendar.getInstance();
+        this.httpClient = createClient();
     }
 
-    @Override
-    public void run() {
-        while (calStart.getTimeInMillis() < calEnd.getTimeInMillis()) {
-            InputStream is = null;
-            HttpGet httpMsg = new HttpGet(getURL());
+    private HttpClient createClient() {
+        try {
+            SSLContext sslContext = SSLContexts.custom()
+                    .loadTrustMaterial((chain, authType) -> true).build();
 
-            try {
-                HttpResponse response = httpClient.execute(httpMsg);
-                HttpEntity entity = response.getEntity();
-
-                if (entity != null) {
-                    is = entity.getContent();
-                }
-
-                if (is != null && storage.save(is, this)){
-                    setDownloadTime();
-                }
-            } catch (IOException ex) {
-                logger.error("", ex);
-            }
+            SSLConnectionSocketFactory sslConnectionSocketFactory =
+                    new SSLConnectionSocketFactory(sslContext, new String[]
+                            {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"}, null,
+                            NoopHostnameVerifier.INSTANCE);
+            CloseableHttpClient client = HttpClients.custom()
+                    .setSSLSocketFactory(sslConnectionSocketFactory)
+                    .setRedirectStrategy(new LaxRedirectStrategy())
+                    .build();
+            return client;
+        } catch (Exception e) {
+            return null;
         }
-        logger.info(getTableName() + " update finish!");
+
     }
 
     @Override
@@ -72,14 +79,38 @@ public abstract class AbstractDownloader extends Thread implements Downloader {
 
     @Override
     public void download() {
-        this.start();
+        if (httpClient == null)
+            throw new IllegalStateException("Null HttpClient");
+
+        while (calStart.getTimeInMillis() < calEnd.getTimeInMillis()) {
+            InputStream is = null;
+            HttpPost httpMsg = new HttpPost(getParams());
+
+            try {
+                httpMsg.setEntity(new UrlEncodedFormEntity(postPayload()));
+                HttpResponse response = httpClient.execute(httpMsg);
+
+                HttpEntity entity = response.getEntity();
+
+                if (entity != null) {
+                    is = entity.getContent();
+                }
+
+                if (is != null && storage.save(is, this)) {
+                    setDownloadTime();
+                }
+            } catch (IOException ex) {
+                logger.error("", ex);
+            }
+        }
+        logger.info(getName() + " update finish!");
     }
 
     @Override
     public void update() {
         Date date = storage.getLastDate(this.dwner);
-        if(date == null){
-            logger.error(this.getTableName() + "is empty to update!!!");
+        if (date == null) {
+            logger.error(this.getName() + "is empty to update!!!");
             return;
         }
         calStart.setTime(date);
@@ -103,6 +134,9 @@ public abstract class AbstractDownloader extends Thread implements Downloader {
     }
 
     private Calendar getOneMon() {
+//        LocalDate sDate = LocalDate.ofEpochDay(calStart.getTimeInMillis());
+//        LocalDate eDate = sDate.with(lastDayOfMonth());
+
         Calendar cal = (Calendar) calStart.clone();
         cal.add(Calendar.DATE, 20);
         if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
@@ -112,8 +146,13 @@ public abstract class AbstractDownloader extends Thread implements Downloader {
     }
 
     @Override
-    public String getTableName() {
-        return table;
+    public Date getCurrentTime() {
+        return calStart.getTime();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -121,11 +160,13 @@ public abstract class AbstractDownloader extends Thread implements Downloader {
         return firstLine;
     }
 
-    protected abstract String getURL();
+    protected abstract String getParams();
+
+    protected abstract List<NameValuePair> postPayload();
 
     protected void setDownloadTime() {
         calStart.setTime(oneMonCal.getTime());
         calStart.add(Calendar.DATE, 1);
     }
-    
+
 }

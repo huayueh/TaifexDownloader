@@ -2,7 +2,9 @@ package taifex.downloader;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import taifex.model.pojo.TbPutCallRatio;
 import taifex.storage.Storage;
@@ -10,6 +12,8 @@ import taifex.storage.Storage;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Harvey
@@ -19,12 +23,12 @@ class PutCallRationDwner extends AbstractDownloader {
 
     public PutCallRationDwner(URL url, Storage storage) {
         super(url, storage);
-        this.table = "TB_PUT_CALL_RATIO";
+        this.name = "TB_PUT_CALL_RATIO";
         this.firstLine = "日期";
     }
 
     @Override
-    protected String getURL() {
+    protected String getParams() {
         String ret = url.toExternalForm();
 
         String sDate = getStartDate();
@@ -41,6 +45,19 @@ class PutCallRationDwner extends AbstractDownloader {
         }
 
         return ret;
+    }
+
+    @Override
+    protected List<NameValuePair> postPayload() {
+        String sDate = getStartDate();
+        String eDate = getEndDate();
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("download", "1"));
+        params.add(new BasicNameValuePair("datestart", sDate));
+        params.add(new BasicNameValuePair("dateend", eDate));
+
+        return params;
     }
 
     @Override

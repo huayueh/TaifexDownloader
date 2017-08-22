@@ -15,7 +15,6 @@ import java.util.Date;
 /**
  * User: Harvey
  * Date: 2015/3/3
- * Time: 下午 06:22
  */
 public class DatabaseStorage implements Storage {
     private static final Logger logger = Logger.getLogger(DatabaseStorage.class);
@@ -64,7 +63,7 @@ public class DatabaseStorage implements Storage {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            logger.error(downloader.getTableName(), ex);
+            logger.error(downloader.getName(), ex);
             return false;
         }
     }
@@ -72,7 +71,7 @@ public class DatabaseStorage implements Storage {
     @Override
     public Date getLastDate(Downloader downloader) {
         Date date = null;
-        String table = downloader.getTableName();
+        String table = downloader.getName();
         String strQuery = "SELECT DATE FROM " + table + " ORDER BY DATE DESC FETCH FIRST 1 ROWS ONLY";
         Query q = em.createNativeQuery(strQuery);
 

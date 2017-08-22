@@ -3,6 +3,7 @@ package taifex.downloader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 import taifex.model.pojo.TbContractOut;
@@ -13,6 +14,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * @author Harvey
@@ -23,12 +25,12 @@ class SettleDwner extends AbstractDownloader {
 
     public SettleDwner(URL url, Storage storage) {
         super(url, storage);
-        this.table = "TB_CONTRACT_OUT";
+        this.name = "TB_CONTRACT_OUT";
         this.firstLine = "最後結算日";
     }
 
     @Override
-    protected String getURL() {
+    protected String getParams() {
         String ret = url.toExternalForm();
 
         String sDate = getStartDate();
@@ -51,6 +53,11 @@ class SettleDwner extends AbstractDownloader {
         }
 
         return ret;
+    }
+
+    @Override
+    protected List<NameValuePair> postPayload() {
+        return null;
     }
 
     @Override

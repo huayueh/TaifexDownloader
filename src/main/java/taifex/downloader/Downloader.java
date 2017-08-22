@@ -1,11 +1,11 @@
 package taifex.downloader;
 
 import java.text.ParseException;
+import java.util.Date;
 
 /**
  * User: Harvey
  * Date: 2015/2/24
- * Time: 下午 03:07
  */
 public interface Downloader {
     void setStart(int sY, int sM, int sD);
@@ -16,7 +16,9 @@ public interface Downloader {
 
     void update();
 
-    String getTableName();
+    Date getCurrentTime();
+
+    String getName();
 
     String getFirstLine();
 

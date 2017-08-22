@@ -43,7 +43,7 @@
 	-->
 	
     <root>
-		<priority value ="INFO" />
+		<priority value ="DEBUG" />
         <!--<appender-ref ref="CONSOLE"/>-->
     </root>
 

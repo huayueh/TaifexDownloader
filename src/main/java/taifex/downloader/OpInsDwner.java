@@ -3,7 +3,9 @@ package taifex.downloader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import taifex.model.pojo.TbOpIns;
 import taifex.model.pojo.TbOpInsPK;
@@ -12,6 +14,8 @@ import taifex.storage.Storage;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Harvey
@@ -23,12 +27,12 @@ class OpInsDwner extends AbstractDownloader {
 
     public OpInsDwner(URL url, Storage storage) {
         super(url, storage);
-        this.table = "TB_OP_INS";
+        this.name = "TB_OP_INS";
         this.firstLine = "日期";
     }
 
     @Override
-    protected String getURL() {
+    protected String getParams() {
         String ret = url.toExternalForm();
 
         String sDate = getStartDate();
@@ -53,6 +57,28 @@ class OpInsDwner extends AbstractDownloader {
         }
 
         return ret;
+    }
+
+    @Override
+    protected List<NameValuePair> postPayload() {
+        String sDate = getStartDate();
+        String eDate = getEndDate();
+
+        String[] sDateAry = StringUtils.split(sDate, "/");
+        String[] eDateAry = StringUtils.split(eDate, "/");
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("syear", sDateAry[0]));
+        params.add(new BasicNameValuePair("smonth", sDateAry[1]));
+        params.add(new BasicNameValuePair("sday", sDateAry[2]));
+        params.add(new BasicNameValuePair("eyear", eDateAry[0]));
+        params.add(new BasicNameValuePair("emonth", eDateAry[1]));
+        params.add(new BasicNameValuePair("eday", eDateAry[2]));
+        params.add(new BasicNameValuePair("datestart", sDate));
+        params.add(new BasicNameValuePair("dateend", eDate));
+        params.add(new BasicNameValuePair("COMMODITY_ID", commodity));
+
+        return params;
     }
 
     @Override
