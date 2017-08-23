@@ -5,7 +5,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import taifex.model.pojo.TbFutureHis;
 import taifex.model.pojo.TbFutureHisPK;
 import taifex.storage.Storage;
@@ -20,7 +21,7 @@ import java.util.List;
  * @author Harvey
  */
 public class FutureDwner extends AbstractDownloader {
-    private static final Logger logger = Logger.getLogger(FutureDwner.class);
+    private static final Logger logger = LoggerFactory.getLogger(FutureDwner.class);
     private static final String commodity = "all";
 
 

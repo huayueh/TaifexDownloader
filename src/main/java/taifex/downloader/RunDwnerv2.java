@@ -1,19 +1,20 @@
 package taifex.downloader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import taifex.storage.DatabaseStorage;
 import taifex.storage.FileStorage;
 import taifex.storage.Storage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Harvey
  */
 public class RunDwnerv2 {
+    private static final Logger logger = LoggerFactory.getLogger(RunDwnerv2.class);
 
     public static void main(String arg[]){
         Storage storage = new FileStorage("target/Taifex");
@@ -71,7 +72,8 @@ public class RunDwnerv2 {
 //            downloader.download();
             //-----------------------------------------------------------------------------------
         } catch (MalformedURLException ex) {
-            Logger.getLogger(RunDwnerv2.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("{}", ex);
+
         }
 
     }

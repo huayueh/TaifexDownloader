@@ -12,7 +12,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import taifex.storage.Storage;
 
 import javax.net.ssl.SSLContext;
@@ -30,7 +31,7 @@ import java.util.List;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 public abstract class AbstractDownloader implements Downloader {
-    private static final Logger logger = Logger.getLogger(AbstractDownloader.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDownloader.class);
     private final Storage storage;
     private HttpClient httpClient;
     protected String datePattern = "yyyy/MM/dd";
@@ -89,6 +90,7 @@ public abstract class AbstractDownloader implements Downloader {
 
     @Override
     public void download() {
+        logger.debug("{} starting", this.getName());
         if (httpClient == null)
             throw new IllegalStateException("Null HttpClient");
 

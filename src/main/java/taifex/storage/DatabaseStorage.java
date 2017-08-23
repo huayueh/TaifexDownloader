@@ -1,6 +1,7 @@
 package taifex.storage;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import taifex.downloader.Downloader;
 
 import javax.persistence.EntityManager;
@@ -17,7 +18,7 @@ import java.util.Date;
  * Date: 2015/3/3
  */
 public class DatabaseStorage implements Storage {
-    private static final Logger logger = Logger.getLogger(DatabaseStorage.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseStorage.class);
     private static final String UNIT_NAME = "jdbc:derby:Database;client";
     protected EntityManager em;
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration staus="INFO" monitorInterval="60">
+	<Properties>
+		<Property name="Log4jContextSelector">org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</Property>
+		<Property name="log.location">target/logs</Property>
+		<Property name="app.name">taifex-downloader</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="ConsoleAppender" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %t %-5p %c{1} - %m%n" />
+		</Console>
+		<RollingFile
+				name="RollingFileAppender"
+				fileName="${log.location}/${app.name}.log"
+				filePattern="${log.location}/${app.name}-log.%d{yyyy-MM-dd}_%i.zip">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %t %-5p %c{1} - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+			</Policies>
+
+			<DefaultRolloverStrategy>
+				<Delete basePath="${log.location}" maxDepth="2">
+					<IfFileName glob="*/*-log.*.zip" />
+					<IfLastModified age="31d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+	</Appenders>
+	
+	<Loggers>
+		<AsyncLogger name="taifex" level="DEBUG"/>
+
+
+		<Root level="ERROR">
+			<AppenderRef ref="ConsoleAppender" />
+			<AppenderRef ref="RollingFileAppender" />
+		</Root>
+	</Loggers>
+</Configuration>
+
+<!--
+
+   Log4J Configuration Quick Reference:
+   ====================================
+
+
+   Priority order is DEBUG < INFO < WARN < ERROR < FATAL
+
+
+   PatternLayout conversion characters:
+
+	%c   Category of the logging event
+	%C   Fully qualified class name of the caller
+	%d   Date of the logging event  (example: %d{HH:mm:ss,SSS} )
+	%F   File name where the logging request was issued (caution: extremely slow)
+	%l   Location information of the caller (caution: extremely slow)
+	%L   Line number from where the logging request was issued (caution: extremely slow)
+	%m   Application-supplied message
+	%M   Method name from where the logging request was issued (caution: extremely slow)
+	%n   Line separator
+	%p   Priority of the logging event
+	%r   Number of milliseconds since the start of the application
+	%t   Name of the thread that generated the logging event
+	%x   Nested diagnotic context associated with the thread
+	%%   A single percent sign
+
+   Format modifiers examples:
+
+	%20c     Left pad with spaces if category is less than 20 characters long
+	%-20c    Right pad with spaces if category is less than 20 characters long
+	%.30c    Truncate from the beginning if category is more than 30 chars long
+	%20.30c  Left pad 20 chars + truncate from beginning if more than 30 chars
+	%-20.30c Right pad 20 chars + truncate from beginning if more than 30 chars
+
+   Examples:  "%r [%t] %-5p %c %x - %m\n"
+			  "%-6r [%15.15t] %-5p %30.30c %x - %m\n"
+
+-->

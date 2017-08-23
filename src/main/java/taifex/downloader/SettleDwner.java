@@ -5,7 +5,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import taifex.model.pojo.TbContractOut;
 import taifex.model.pojo.TbContractOutPK;
 import taifex.storage.Storage;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 class SettleDwner extends AbstractDownloader {
 
-    private static final Logger logger = Logger.getLogger(SettleDwner.class);
+    private static final Logger logger = LoggerFactory.getLogger(SettleDwner.class);
 
     public SettleDwner(URL url, Storage storage) {
         super(url, storage);

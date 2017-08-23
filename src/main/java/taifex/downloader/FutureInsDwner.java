@@ -6,7 +6,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import taifex.model.pojo.TbFutureIns;
 import taifex.model.pojo.TbFutureInsPK;
 import taifex.storage.Storage;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 class FutureInsDwner extends AbstractDownloader {
 
-    private static final Logger logger = Logger.getLogger(FutureInsDwner.class);
+    private static final Logger logger = LoggerFactory.getLogger(FutureInsDwner.class);
     private static final String commodity = "";
 
     public FutureInsDwner(URL url, Storage storage) {
