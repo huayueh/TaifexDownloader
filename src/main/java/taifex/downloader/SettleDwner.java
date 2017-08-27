@@ -5,6 +5,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import taifex.model.pojo.TbContractOut;
@@ -15,6 +16,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -35,31 +37,27 @@ class SettleDwner extends AbstractDownloader {
     protected String getParams() {
         String ret = url.toExternalForm();
 
+        return ret;
+    }
+
+    @Override
+    protected List<NameValuePair> postPayload() {
         String sDate = getFetchStart();
         String eDate = getFetchEnd();
 
         String[] sDateAry = StringUtils.split(sDate, "/");
         String[] eDateAry = StringUtils.split(eDate, "/");
 
-        URIBuilder builder = new URIBuilder().setPath(ret).
-                addParameter("download", "1").
-                addParameter("syear", sDateAry[0]).
-                addParameter("smonth", sDateAry[1]).
-                addParameter("eyear", eDateAry[0]).
-                addParameter("emonth", eDateAry[1]).
-                addParameter("cate", "1");
-        try {
-            ret = builder.build().toString();
-        } catch (URISyntaxException e) {
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("download", "1"));
+        params.add(new BasicNameValuePair("syear", sDateAry[0]));
+        params.add(new BasicNameValuePair("smonth", sDateAry[1]));
+        params.add(new BasicNameValuePair("eyear", eDateAry[0]));
+        params.add(new BasicNameValuePair("emonth", eDateAry[1]));
+        params.add(new BasicNameValuePair("cate", "7"));
+        params.add(new BasicNameValuePair("cateId", ""));
 
-        }
-
-        return ret;
-    }
-
-    @Override
-    protected List<NameValuePair> postPayload() {
-        return null;
+        return params;
     }
 
     @Override
@@ -82,8 +80,4 @@ class SettleDwner extends AbstractDownloader {
         return tbCotractOut;
     }
 
-    @Override
-    protected void setFetched() {
-        calStart.add(Calendar.MONTH, 1);
-    }
 }
