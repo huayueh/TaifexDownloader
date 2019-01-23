@@ -53,19 +53,8 @@ public class FutureDwner extends AbstractDownloader {
         return ret;
     }
 
-    public List<NameValuePair> postPayload() {
-        String sDate = getFetchStart();
-        String eDate = getFetchEnd();
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("DATA_DATE", sDate));
-        params.add(new BasicNameValuePair("DATA_DATE1", eDate));
-        params.add(new BasicNameValuePair("datestart", sDate));
-        params.add(new BasicNameValuePair("dateend", eDate));
-        params.add(new BasicNameValuePair("COMMODITY_ID", commodity));
 
-        return params;
-    }
     @Override
     public Object rowToPojo(String line) throws ParseException {
         String[] strSql = line.split("\\s*,\\s*");

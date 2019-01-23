@@ -66,19 +66,12 @@ class OpInsDwner extends AbstractDownloader {
         String sDate = getFetchStart();
         String eDate = getFetchEnd();
 
-        String[] sDateAry = StringUtils.split(sDate, "/");
-        String[] eDateAry = StringUtils.split(eDate, "/");
-
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("syear", sDateAry[0]));
-        params.add(new BasicNameValuePair("smonth", sDateAry[1]));
-        params.add(new BasicNameValuePair("sday", sDateAry[2]));
-        params.add(new BasicNameValuePair("eyear", eDateAry[0]));
-        params.add(new BasicNameValuePair("emonth", eDateAry[1]));
-        params.add(new BasicNameValuePair("eday", eDateAry[2]));
-        params.add(new BasicNameValuePair("datestart", sDate));
-        params.add(new BasicNameValuePair("dateend", eDate));
-        params.add(new BasicNameValuePair("COMMODITY_ID", commodity));
+        params.add(new BasicNameValuePair("firstDate", sDate + " 00:00"));
+        params.add(new BasicNameValuePair("lastDate", eDate + " 00:00"));
+        params.add(new BasicNameValuePair("queryStartDate", sDate));
+        params.add(new BasicNameValuePair("queryEndDate", eDate));
+        params.add(new BasicNameValuePair("commodity_id", commodity));
 
         return params;
     }

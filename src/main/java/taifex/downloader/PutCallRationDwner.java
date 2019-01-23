@@ -55,9 +55,9 @@ class PutCallRationDwner extends AbstractDownloader {
         String eDate = getFetchEnd();
 
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("download", "1"));
-        params.add(new BasicNameValuePair("datestart", sDate));
-        params.add(new BasicNameValuePair("dateend", eDate));
+        params.add(new BasicNameValuePair("down_type", ""));
+        params.add(new BasicNameValuePair("queryStartDate", sDate));
+        params.add(new BasicNameValuePair("queryEndDate", eDate));
 
         return params;
     }

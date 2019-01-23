@@ -11,6 +11,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +34,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 public abstract class AbstractDownloader implements Downloader {
     private static final Logger logger = LoggerFactory.getLogger(AbstractDownloader.class);
+    private static final String commodity = "all";
     private final Storage storage;
     private HttpClient httpClient;
     protected String datePattern = "yyyy/MM/dd";
@@ -156,7 +159,19 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected abstract String getParams();
 
-    protected abstract List<NameValuePair> postPayload();
+    protected List<NameValuePair> postPayload() {
+        String sDate = getFetchStart();
+        String eDate = getFetchEnd();
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("down_type", "1"));
+        params.add(new BasicNameValuePair("commodity_id2", ""));
+        params.add(new BasicNameValuePair("queryStartDate", sDate));
+        params.add(new BasicNameValuePair("queryEndDate", eDate));
+        params.add(new BasicNameValuePair("commodity_id", commodity));
+
+        return params;
+    }
 
     protected void setFetched() {
         fetchStart = fetchEnd.plusDays(1);
