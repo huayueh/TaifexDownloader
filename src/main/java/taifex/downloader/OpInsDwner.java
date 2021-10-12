@@ -37,27 +37,6 @@ class OpInsDwner extends AbstractDownloader {
     protected String getParams() {
         String ret = url.toExternalForm();
 
-        String sDate = getFetchStart();
-        String eDate = getFetchEnd();
-
-        String[] sDateAry = StringUtils.split(sDate, "/");
-        String[] eDateAry = StringUtils.split(eDate, "/");
-        URIBuilder builder = new URIBuilder().setPath(ret).
-                addParameter("syear", sDateAry[0]).
-                addParameter("smonth", sDateAry[1]).
-                addParameter("sday", sDateAry[2]).
-                addParameter("eyear", eDateAry[0]).
-                addParameter("emonth", eDateAry[1]).
-                addParameter("eday", eDateAry[2]).
-                addParameter("datestart", sDate).
-                addParameter("dateend", eDate).
-                addParameter("COMMODITY_ID", commodity);
-        try {
-            ret = builder.build().toString();
-        } catch (URISyntaxException e) {
-
-        }
-
         return ret;
     }
 

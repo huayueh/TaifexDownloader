@@ -29,7 +29,7 @@
 	</Appenders>
 	
 	<Loggers>
-		<AsyncLogger name="taifex" level="DEBUG"/>
+		<AsyncLogger name="taifex" level="INFO"/>
 
 
 		<Root level="ERROR">
