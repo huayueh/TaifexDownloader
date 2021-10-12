@@ -138,7 +138,12 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected String getFetchEnd() {
-        this.fetchEnd = fetchStart.with(lastDayOfMonth());
+        LocalDate end = fetchStart.with(lastDayOfMonth());
+        if(end.isAfter(LocalDate.now())){
+            this.fetchEnd = LocalDate.now();
+        } else {
+            this.fetchEnd = fetchStart.with(lastDayOfMonth());
+        }
         return fetchEnd.format(DateTimeFormatter.ofPattern(datePattern));
     }
 
