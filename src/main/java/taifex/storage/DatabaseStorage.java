@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User: Harvey
@@ -67,6 +68,11 @@ public class DatabaseStorage implements Storage {
             logger.error(downloader.getName(), ex);
             return false;
         }
+    }
+
+    @Override
+    public boolean save(List<String> line, Downloader downloader) {
+        return false;
     }
 
     @Override

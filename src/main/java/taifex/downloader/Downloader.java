@@ -1,5 +1,6 @@
 package taifex.downloader;
 
+import java.io.InputStream;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 
@@ -15,6 +16,10 @@ public interface Downloader {
     void download();
 
     void update();
+
+    boolean processResponse(InputStream is);
+
+    boolean append();
 
     LocalDateTime getCurrentTime();
 

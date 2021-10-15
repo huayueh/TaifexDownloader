@@ -4,6 +4,7 @@ import taifex.downloader.Downloader;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User: Harvey
@@ -12,5 +13,6 @@ import java.util.Date;
  */
 public interface Storage {
     boolean save(InputStream is, Downloader downloader);
+    boolean save(List<String> line, Downloader downloader);
     Date getLastDate(Downloader downloader);
 }
