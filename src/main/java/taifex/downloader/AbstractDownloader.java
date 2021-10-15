@@ -1,23 +1,7 @@
 package taifex.downloader;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.ssl.SSLContexts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import taifex.storage.Storage;
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
-import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -30,13 +14,34 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContexts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import taifex.storage.Storage;
 
 public abstract class AbstractDownloader implements Downloader {
     private static final Logger logger = LoggerFactory.getLogger(AbstractDownloader.class);
     private static final String commodity = "all";
-    private final Storage storage;
     private HttpClient httpClient;
+    private Downloader dwner = this;
+
+    protected final Storage storage;
+    protected String requestMethod = HttpPost.METHOD_NAME;
     protected String datePattern = "yyyy/MM/dd";
     protected String name;
     protected String firstLine;
@@ -47,7 +52,7 @@ public abstract class AbstractDownloader implements Downloader {
     protected LocalDate fetchStart;
     protected LocalDate fetchEnd;
     protected URL url;
-    private Downloader dwner = this;
+    protected boolean append = false;
 
     public AbstractDownloader(URL url, Storage storage) {
         this.storage = storage;
@@ -74,7 +79,11 @@ public abstract class AbstractDownloader implements Downloader {
         } catch (Exception e) {
             return null;
         }
+    }
 
+    @Override
+    public boolean append() {
+        return append;
     }
 
     @Override
@@ -99,19 +108,24 @@ public abstract class AbstractDownloader implements Downloader {
 
         while (fetchEnd.isBefore(endDate)) {
             InputStream is = null;
-            HttpPost httpMsg = new HttpPost(getParams());
+            HttpResponse response;
 
             try {
-                httpMsg.setEntity(new UrlEncodedFormEntity(postPayload()));
-                HttpResponse response = httpClient.execute(httpMsg);
-
+                if (HttpGet.METHOD_NAME.equals(requestMethod)) {
+                    HttpGet httpMsg = new HttpGet(getParams());
+                    response = httpClient.execute(httpMsg);
+                } else {
+                    HttpPost httpMsg = new HttpPost(getParams());
+                    httpMsg.setEntity(new UrlEncodedFormEntity(postPayload()));
+                    response = httpClient.execute(httpMsg);
+                }
                 HttpEntity entity = response.getEntity();
 
                 if (entity != null) {
                     is = entity.getContent();
                 }
 
-                if (is != null && storage.save(is, this)) {
+                if (is != null && processResponse(is)) {
                     setFetched();
                 }
             } catch (IOException ex) {
@@ -119,6 +133,11 @@ public abstract class AbstractDownloader implements Downloader {
             }
         }
         logger.info(getName() + " update finish!");
+    }
+
+    @Override
+    public boolean processResponse(InputStream is) {
+        return storage.save(is, this);
     }
 
     @Override
