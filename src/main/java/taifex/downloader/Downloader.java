@@ -25,7 +25,7 @@ public interface Downloader {
 
     String getName();
 
-    String getFirstLine();
+    String getCsvHeader();
 
     Object rowToPojo(String line) throws ParseException;
 }

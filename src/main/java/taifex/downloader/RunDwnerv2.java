@@ -17,9 +17,9 @@ public class RunDwnerv2 {
 
     public static void main(String arg[]){
         Storage storage = new FileStorage("target/Taifex");
-//        Storage storage = new DatabaseStorage();
+        Storage twseStorage = new FileStorage("target/Twse");
         Downloader downloader = null;
-        int today = 15;
+        int today = 20;
 
         try {
             //----------------盤後資訊---------------------------------------------------
@@ -62,25 +62,24 @@ public class RunDwnerv2 {
             downloader.setStart(2021, 10, 1);
             downloader.setEnd(2021, 10, today);
             downloader.download();
-            //-----------------------------------------------------------------------------------
 
-            //----------------選擇權比率---------------------------------------------------
-//            downloader = new PutCallRationDwner(new URL("http://www.taifex.com.tw/cht/3/pcRatioDown"), storage); //選擇權每日交易行情   2001/12/24
-////            downloader.setStart(2001, 12, 24);
-//            downloader.setStart(2021, 10, 1);
-//            downloader.setEnd(2021, 10, 5);
-//            downloader.download();
-            //-----------------------------------------------------------------------------------
-
-            //----------------結算價 no work-----------------------------------------------
-//            downloader = new SettleDwner(new URL("http://www.taifex.com.tw/chinese/5/FSPDownload.asp?menuid1=03"), storage); //選擇權每日交易行情   2001/12/24
-//            downloader.setStart(2001, 12, 24);
-//            downloader.setEnd(2017, 8, 20);
-//            downloader.download();
-            //-----------------------------------------------------------------------------------
-            downloader = new TwseDwner(new URL("https://www.twse.com.tw/fund/BFI82U"), storage);
+            //----------------TWSE-----------------------------------------------
+            //----------------三大法人買賣超-----------------------------------------------
+            downloader = new TwseInsDwner(new URL("https://www.twse.com.tw/fund/BFI82U"), twseStorage);
             downloader.setStart(2021, 10, 1);
-            downloader.setEnd(2021, 10, today);
+            downloader.setEnd(2021, 10, today+1);
+            downloader.download();
+
+            //----------------融資融券餘額----------------------------------------------------
+            downloader = new CreditTransDwner(new URL("https://www.twse.com.tw/exchangeReport/MI_MARGN"), twseStorage);
+            downloader.setStart(2021, 10, 1);
+            downloader.setEnd(2021, 10, today+1);
+            downloader.download();
+
+            //------------------借券賣出--------------------------------------------------------
+            downloader = new BorrowSellDwner(new URL("https://www.twse.com.tw/exchangeReport/TWT93U"), twseStorage);
+            downloader.setStart(2021, 10, 1);
+            downloader.setEnd(2021, 10, today+1);
             downloader.download();
         } catch (MalformedURLException ex) {
             logger.error("{}", ex);
