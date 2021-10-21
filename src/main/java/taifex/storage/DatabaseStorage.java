@@ -37,7 +37,7 @@ public class DatabaseStorage implements Storage {
             br = new BufferedReader(new InputStreamReader(is, "Big5"));
             line = br.readLine();
 
-            if (line != null && !line.startsWith(downloader.getFirstLine())) {
+            if (line != null && !line.startsWith(downloader.getCsvHeader())) {
                 return true;
             }
 

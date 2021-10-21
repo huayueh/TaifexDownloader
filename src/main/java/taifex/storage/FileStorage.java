@@ -57,6 +57,11 @@ public class FileStorage implements Storage {
         }
         try {
             File targetFile = new File(ROOT_PATH + File.separator + downloader.getName() + File.separator + downloader.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy_MM")) + ".csv");
+            if (!targetFile.exists()){
+                FileOutputStream output = openOutputStream(targetFile, true);
+                IOUtils.write(downloader.getCsvHeader(), output, "UTF-8");
+                output.close();
+            }
             FileOutputStream output = openOutputStream(targetFile, true);
             try {
                 IOUtils.writeLines(lines, LINE_SEPARATOR, output, "UTF-8");

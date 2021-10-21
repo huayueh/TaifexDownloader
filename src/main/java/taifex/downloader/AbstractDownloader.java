@@ -177,7 +177,7 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     @Override
-    public String getFirstLine() {
+    public String getCsvHeader() {
         return firstLine;
     }
 
