@@ -5,6 +5,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -159,7 +160,15 @@ public abstract class AbstractDownloader implements Downloader {
     protected String getFetchEnd() {
         LocalDate end = fetchStart.with(lastDayOfMonth());
         if(end.isAfter(LocalDate.now())){
-            this.fetchEnd = LocalDate.now();
+            LocalDate date = LocalDate.now();
+            DayOfWeek day = date.getDayOfWeek();
+            if (DayOfWeek.SUNDAY == day) {
+                this.fetchEnd = date.plusDays(-2);
+            } else if(DayOfWeek.SATURDAY == day) {
+                this.fetchEnd = date.plusDays(-1);
+            } else {
+                this.fetchEnd = date;
+            }
         } else {
             this.fetchEnd = fetchStart.with(lastDayOfMonth());
         }
