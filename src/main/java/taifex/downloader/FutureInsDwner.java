@@ -1,22 +1,14 @@
 package taifex.downloader;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import taifex.model.pojo.TbFutureIns;
-import taifex.model.pojo.TbFutureInsPK;
 import taifex.storage.Storage;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Harvey
@@ -52,33 +44,4 @@ class FutureInsDwner extends AbstractDownloader {
         return params;
     }
 
-    @Override
-    public Object rowToPojo(String line) throws ParseException {
-        String[] strSql = line.split("\\s*,\\s*");
-        if (strSql.length < 15) {
-            return null;
-        }
-        //日期,商品名稱,身份別,多方交易口數,多方交易契約金額(千元),空方交易口數,空方交易契約金額(千元),多空交易口數淨額,多空交易契約金額淨額(千元),多方未平倉口數,多方未平倉契約金額(千元),空方未平倉口數,空方未平倉契約金額(千元),多空未平倉口數淨額,多空未平倉契約金額淨額(千元)
-        // 0      1       2        3             4                     5            6                    7                   8                    9             10                     11           12                      13                    14
-        TbFutureIns tbFutureIns = new TbFutureIns();
-        TbFutureInsPK pk = new TbFutureInsPK();
-        pk.setDate(DateUtils.parseDateStrictly(strSql[0], datePattern));
-        pk.setContract(strSql[1]);
-        pk.setTraderType(strSql[2]);
-        tbFutureIns.setTbFutureInsPK(pk);
-        tbFutureIns.setBuyCnt(NumberUtils.toInt(strSql[3]));
-        tbFutureIns.setBuyAmt(NumberUtils.toInt(strSql[4]));
-        tbFutureIns.setSellCnt(NumberUtils.toInt(strSql[5]));
-        tbFutureIns.setSellAmt(NumberUtils.toInt(strSql[6]));
-        tbFutureIns.setCntNet(NumberUtils.toInt(strSql[7]));
-        tbFutureIns.setAmtNet(NumberUtils.toInt(strSql[8]));
-        tbFutureIns.setBuyOiCnt(NumberUtils.toInt(strSql[9]));
-        tbFutureIns.setBuyOiAmt(NumberUtils.toInt(strSql[10]));
-        tbFutureIns.setSellOiCnt(NumberUtils.toInt(strSql[11]));
-        tbFutureIns.setSellOiAmt(NumberUtils.toInt(strSql[12]));
-        tbFutureIns.setCntOiNet(NumberUtils.toInt(strSql[13]));
-        tbFutureIns.setAmtOiNet(NumberUtils.toInt(strSql[14]));
-
-        return tbFutureIns;
-    }
 }

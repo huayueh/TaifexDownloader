@@ -1,21 +1,12 @@
 package taifex.downloader;
 
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import taifex.model.pojo.TbFutureHis;
-import taifex.model.pojo.TbFutureHisPK;
-import taifex.storage.Storage;
-
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import taifex.storage.Storage;
 
 /**
  * @author Harvey
@@ -51,40 +42,5 @@ public class FutureDwner extends AbstractDownloader {
         }
 
         return ret;
-    }
-
-
-
-    @Override
-    public Object rowToPojo(String line) throws ParseException {
-        String[] strSql = line.split("\\s*,\\s*");
-        if (strSql.length < 12) {
-            return null;
-        }
-        //交易日期 ,契約,交割月份,開盤價,最高價,最低價,收盤價,漲跌價,漲跌%,*成交量,結算價,*未沖銷契約數,最後最佳買價,最後最佳賣價,歷史最高價,歷史最低價
-        //   0       1     2       3     4      5     6       7     8      9     10       11          12           13          14       15
-        String strUpDown = strSql[7].replaceAll("▲", "").replaceAll("▼", "");
-        String strUpDownP = strSql[7].replaceAll("▲", "").replaceAll("▼", "").replaceAll("%", "");
-
-        TbFutureHis future = new TbFutureHis();
-        TbFutureHisPK pk = new TbFutureHisPK();
-        pk.setDate(DateUtils.parseDateStrictly(strSql[0], datePattern));
-        pk.setContract(strSql[1]);
-        pk.setContractMonth(NumberUtils.toInt(strSql[2]));
-        future.setTbFutureHisPK(pk);
-        future.setOpenPrice(NumberUtils.toInt(strSql[3]));
-        future.setHighPrice(NumberUtils.toInt(strSql[4]));
-        future.setLowPrice(NumberUtils.toInt(strSql[5]));
-        future.setClosePrice(NumberUtils.toInt(strSql[6]));
-        future.setUpdownPrice(NumberUtils.toInt(strUpDown));
-        future.setUpdownPercent(NumberUtils.toDouble(strUpDownP));
-        future.setVolumn(NumberUtils.toInt(strSql[9]));
-        future.setSettlePrice(NumberUtils.toInt(strSql[10]));
-        future.setOi(NumberUtils.toInt(strSql[11]));
-
-        if (pk.getContractMonth() == 0) {
-            return null;
-        }
-        return future;
     }
 }
