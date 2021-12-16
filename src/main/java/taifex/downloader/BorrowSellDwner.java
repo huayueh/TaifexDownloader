@@ -3,7 +3,6 @@ package taifex.downloader;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,8 +142,4 @@ public class BorrowSellDwner extends AbstractDownloader {
         return true;
     }
 
-    @Override
-    public Object rowToPojo(String line) throws ParseException {
-        return null;
-    }
 }
