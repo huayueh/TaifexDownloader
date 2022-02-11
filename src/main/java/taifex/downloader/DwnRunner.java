@@ -17,11 +17,11 @@ public class DwnRunner {
 
     public static void main(String arg[]){
         Storage storage = new FileStorage("target/Taifex");
-        Storage twseStorage = new FileStorage("target/Taifex");
+        Storage twseStorage = new FileStorage("target/Twse");
         Downloader downloader;
-        int theYear = 2021;
-        int theMonth = 12;
-        int today = 16;
+        int theYear = 2022;
+        int theMonth = 2;
+        int today = 10;
 
         try {
             //----------------盤後資訊---------------------------------------------------
@@ -89,6 +89,13 @@ public class DwnRunner {
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today+1);
             downloader.download();
+
+            //------------------交易量歷史資料--------------------------------------------------------
+            downloader = new TwseVolDwner(new URL("https://www.twse.com.tw/exchangeReport/FMTQIK"), twseStorage);
+            downloader.setStart(theYear, theMonth, 1);
+            downloader.setEnd(theYear, theMonth, today+1);
+            downloader.download();
+
         } catch (MalformedURLException ex) {
             logger.error("{}", ex);
 
