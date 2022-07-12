@@ -13,6 +13,7 @@ import taifex.storage.Storage;
  */
 public class OptionDwner extends AbstractDownloader {
     private static final Logger logger = LoggerFactory.getLogger(OptionDwner.class);
+
     private static final String commodity = "all";
 
 
@@ -29,7 +30,9 @@ public class OptionDwner extends AbstractDownloader {
         String sDate = getFetchStart();
         String eDate = getFetchEnd();
 
-        URIBuilder builder = new URIBuilder().setPath(ret).
+        URIBuilder builder = new URIBuilder().setScheme(url.getProtocol()).
+                setHost(url.getHost()).
+                setPath(url.getPath()).
                 addParameter("DATA_DATE", sDate).
                 addParameter("DATA_DATE1", eDate).
                 addParameter("datestart", sDate).
