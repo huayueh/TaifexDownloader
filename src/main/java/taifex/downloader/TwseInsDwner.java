@@ -42,7 +42,9 @@ public class TwseInsDwner extends AbstractDownloader {
 
         String sDate = fetchStart.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-        URIBuilder builder = new URIBuilder().setPath(ret).
+        URIBuilder builder = new URIBuilder().setScheme(url.getProtocol()).
+                setHost(url.getHost()).
+                setPath(url.getPath()).
                 addParameter("response", "json").
                 addParameter("dayDate", sDate).
                 addParameter("weekDate", "").

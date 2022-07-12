@@ -36,7 +36,9 @@ class FutureBigTraderOiDwner extends AbstractDownloader {
         String[] sDateAry = StringUtils.split(sDate, "/");
         String[] eDateAry = StringUtils.split(eDate, "/");
 
-        URIBuilder builder = new URIBuilder().setPath(ret).
+        URIBuilder builder = new URIBuilder().setScheme(url.getProtocol()).
+                setHost(url.getHost()).
+                setPath(url.getPath()).
                 addParameter("syear", sDateAry[0]).
                 addParameter("smonth", sDateAry[1]).
                 addParameter("sday", sDateAry[2]).

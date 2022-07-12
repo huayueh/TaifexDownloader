@@ -107,7 +107,7 @@ public abstract class AbstractDownloader implements Downloader {
         if (httpClient == null)
             throw new IllegalStateException("Null HttpClient");
 
-        while (fetchEnd.isBefore(endDate)) {
+        while (!fetchEnd.isAfter(endDate)) {
             InputStream is = null;
             HttpResponse response;
 
@@ -208,6 +208,7 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected void setFetched() {
         fetchStart = fetchEnd.plusDays(1);
+        fetchEnd = fetchStart;
     }
 
 }

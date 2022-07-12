@@ -20,8 +20,8 @@ public class DwnRunner {
         Storage twseStorage = new FileStorage("target/Twse");
         Downloader downloader;
         int theYear = 2022;
-        int theMonth = 2;
-        int today = 10;
+        int theMonth = 7;
+        int today = 12;
 
         try {
             //----------------盤後資訊---------------------------------------------------
@@ -69,31 +69,31 @@ public class DwnRunner {
             //----------------三大法人買賣超-----------------------------------------------
             downloader = new TwseInsDwner(new URL("https://www.twse.com.tw/fund/BFI82U"), twseStorage);
             downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today+1);
+            downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
             //----------------融資融券餘額----------------------------------------------------
             downloader = new CreditTransDwner(new URL("https://www.twse.com.tw/exchangeReport/MI_MARGN"), twseStorage);
             downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today+1);
+            downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
             //------------------借券賣出--------------------------------------------------------
             downloader = new BorrowSellDwner(new URL("https://www.twse.com.tw/exchangeReport/TWT93U"), twseStorage);
             downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today+1);
+            downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
             //------------------歷史資料--------------------------------------------------------
             downloader = new TwseDwner(new URL("https://www.twse.com.tw/indicesReport/MI_5MINS_HIST"), twseStorage);
             downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today+1);
+            downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
             //------------------交易量歷史資料--------------------------------------------------------
             downloader = new TwseVolDwner(new URL("https://www.twse.com.tw/exchangeReport/FMTQIK"), twseStorage);
             downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today+1);
+            downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
         } catch (MalformedURLException ex) {

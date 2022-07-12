@@ -31,7 +31,9 @@ class PutCallRationDwner extends AbstractDownloader {
         String sDate = getFetchStart();
         String eDate = getFetchEnd();
 
-        URIBuilder builder = new URIBuilder().setPath(ret).
+        URIBuilder builder = new URIBuilder().setScheme(url.getProtocol()).
+                setHost(url.getHost()).
+                setPath(url.getPath()).
                 addParameter("download", "1").
                 addParameter("datestart", sDate).
                 addParameter("dateend", eDate);
