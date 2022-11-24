@@ -19,9 +19,12 @@ public class DwnRunner {
         Storage storage = new FileStorage("target/Taifex");
         Storage twseStorage = new FileStorage("target/Twse");
         Downloader downloader;
-        int theYear = 2022;
-        int theMonth = 7;
-        int today = 12;
+
+        int theYear = Integer.valueOf(arg[0]);
+        int theMonth = Integer.valueOf(arg[1]);
+        int today = Integer.valueOf(arg[2]);
+
+        logger.info("year:{} month:{} day:{}", theYear, theMonth, today);
 
         try {
             //----------------盤後資訊---------------------------------------------------

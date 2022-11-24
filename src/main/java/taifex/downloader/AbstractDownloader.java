@@ -166,6 +166,8 @@ public abstract class AbstractDownloader implements Downloader {
                 this.fetchEnd = date.plusDays(-2);
             } else if(DayOfWeek.SATURDAY == day) {
                 this.fetchEnd = date.plusDays(-1);
+            } else if(LocalTime.now().isBefore(LocalTime.of(21, 0))){
+                this.fetchEnd = date.plusDays(-1);
             } else {
                 this.fetchEnd = date;
             }
