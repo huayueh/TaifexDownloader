@@ -70,7 +70,7 @@ public abstract class AbstractDownloader implements Downloader {
 
             SSLConnectionSocketFactory sslConnectionSocketFactory =
                     new SSLConnectionSocketFactory(sslContext, new String[]
-                            {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"}, null,
+                            {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"}, null,
                             NoopHostnameVerifier.INSTANCE);
             CloseableHttpClient client = HttpClients.custom()
                     .setSSLSocketFactory(sslConnectionSocketFactory)
@@ -166,7 +166,7 @@ public abstract class AbstractDownloader implements Downloader {
                 this.fetchEnd = date.plusDays(-2);
             } else if(DayOfWeek.SATURDAY == day) {
                 this.fetchEnd = date.plusDays(-1);
-            } else if(LocalTime.now().isBefore(LocalTime.of(21, 0))){
+            } else if(!isReadyToday()){
                 this.fetchEnd = date.plusDays(-1);
             } else {
                 this.fetchEnd = date;
@@ -193,6 +193,11 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected abstract String getParams();
+
+    protected boolean isReadyToday() {
+        return true;
+//        return LocalTime.now().isBefore(LocalTime.of(21, 0));
+    }
 
     protected List<NameValuePair> postPayload() {
         String sDate = getFetchStart();

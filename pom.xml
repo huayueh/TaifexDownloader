@@ -20,6 +20,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <slf4j.version>1.7.36</slf4j.version>
         <disruptor.version>3.4.4</disruptor.version>
+        <mvn-dependency-plugin.version>3.6.0</mvn-dependency-plugin.version>
     </properties>
 
     <dependencies>
@@ -71,6 +72,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>${mvn-dependency-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-artifact</id>
@@ -80,7 +82,6 @@
                         </goals>
                         <configuration>
                             <includeScope>compile</includeScope>
-                            <excludeScope>test</excludeScope>
                             <excludeGroupIds>junit,org.jmockit</excludeGroupIds>
                             <outputDirectory>target</outputDirectory>
                         </configuration>
