@@ -98,7 +98,6 @@ public class DwnRunner {
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
-
         } catch (MalformedURLException ex) {
             logger.error("{}", ex);
 

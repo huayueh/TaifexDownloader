@@ -8,7 +8,7 @@ for i in target/*.jar; do
 done
 echo $CLASSPATH
 
-#java -cp $CLASSPATH -Xms512m -Xmx2048m taifex.downloader.DwnRunner 2022 11 14
+#java -cp $CLASSPATH -Xms512m -Xmx2048m taifex.downloader.DwnRunner 2022 11 25
 java -cp $CLASSPATH -Xms512m -Xmx2048m taifex.downloader.DwnRunner $(date +"%Y %m %d")
 
 find target/Taifex -name '*.csv'| (while read file; do
