@@ -12,12 +12,11 @@ import java.net.URL;
  *
  * @author Harvey
  */
-public class DwnRunner {
-    private static final Logger logger = LoggerFactory.getLogger(DwnRunner.class);
+public class TaifexRunner {
+    private static final Logger logger = LoggerFactory.getLogger(TaifexRunner.class);
 
     public static void main(String arg[]){
         Storage storage = new FileStorage("target/Taifex");
-        Storage twseStorage = new FileStorage("target/Twse");
         Downloader downloader;
 
         int theYear = Integer.valueOf(arg[0]);
@@ -64,37 +63,6 @@ public class DwnRunner {
 
             downloader = new OpBigTraderOiDwner(new URL("https://www.taifex.com.tw/cht/3/largeTraderOptDown"), storage);  //選擇權大額交易人      2004/7/1
 //            downloader.setStart(2004, 7, 1);
-            downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today);
-            downloader.download();
-
-            //----------------TWSE-----------------------------------------------
-            //----------------三大法人買賣超-----------------------------------------------
-            downloader = new TwseInsDwner(new URL("https://www.twse.com.tw/fund/BFI82U"), twseStorage);
-            downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today);
-            downloader.download();
-
-            //----------------融資融券餘額----------------------------------------------------
-            downloader = new CreditTransDwner(new URL("https://www.twse.com.tw/exchangeReport/MI_MARGN"), twseStorage);
-            downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today);
-            downloader.download();
-
-            //------------------借券賣出--------------------------------------------------------
-            downloader = new BorrowSellDwner(new URL("https://www.twse.com.tw/exchangeReport/TWT93U"), twseStorage);
-            downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today);
-            downloader.download();
-
-            //------------------歷史資料--------------------------------------------------------
-            downloader = new TwseDwner(new URL("https://www.twse.com.tw/indicesReport/MI_5MINS_HIST"), twseStorage);
-            downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today);
-            downloader.download();
-
-            //------------------交易量歷史資料--------------------------------------------------------
-            downloader = new TwseVolDwner(new URL("https://www.twse.com.tw/exchangeReport/FMTQIK"), twseStorage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();

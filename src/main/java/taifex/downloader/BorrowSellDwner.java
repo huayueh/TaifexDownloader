@@ -3,6 +3,7 @@ package taifex.downloader;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +57,11 @@ public class BorrowSellDwner extends AbstractDownloader {
         }
 
         return ret;
+    }
+
+    @Override
+    protected boolean isReadyToday() {
+        return LocalTime.now().isBefore(LocalTime.of(21, 0));
     }
 
     protected List<NameValuePair> postPayload() {

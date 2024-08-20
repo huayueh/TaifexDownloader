@@ -3,6 +3,7 @@ package taifex.downloader;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,6 +71,11 @@ public class CreditTransDwner extends AbstractDownloader {
         } catch (InterruptedException e) {
             logger.error("{}", e);
         }
+    }
+
+    @Override
+    protected boolean isReadyToday() {
+        return LocalTime.now().isBefore(LocalTime.of(21, 0));
     }
 
     @Override
