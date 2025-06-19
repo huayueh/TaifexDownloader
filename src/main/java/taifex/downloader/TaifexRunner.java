@@ -14,62 +14,58 @@ import java.net.URL;
  */
 public class TaifexRunner {
     private static final Logger logger = LoggerFactory.getLogger(TaifexRunner.class);
+    private static DownloaderFactory downloaderFactory = new DefaultDownloaderFactory();
 
     public static void main(String arg[]){
         Storage storage = new FileStorage("target/Taifex");
-        Downloader downloader;
-
         int theYear = Integer.valueOf(arg[0]);
         int theMonth = Integer.valueOf(arg[1]);
         int today = Integer.valueOf(arg[2]);
 
         logger.info("year:{} month:{} day:{}", theYear, theMonth, today);
 
+        runDownloads(storage, theYear, theMonth, today);
+    }
+
+    // Method to allow setting a custom factory for testing
+    public static void setDownloaderFactory(DownloaderFactory factory) {
+        downloaderFactory = factory;
+    }
+
+    public static void runDownloads(Storage storage, int theYear, int theMonth, int today) {
+        Downloader downloader;
         try {
-            //----------------盤後資訊---------------------------------------------------
-            downloader = new OptionDwner(new URL("https://www.taifex.com.tw/cht/3/optDataDown"), storage);     //選擇權每日交易行情   2001/12/24
+            downloader = downloaderFactory.createOptionDwner(new URL("https://www.taifex.com.tw/cht/3/optDataDown"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
-            downloader = new FutureDwner(new URL("https://www.taifex.com.tw/cht/3/futDataDown"), storage);     //期貨每日交易行情    1998/7/21
-//            downloader.setStart(1998, 7, 21);
-            downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today);
-            downloader.download();
-            //-----------------------------------------------------------------------------------
-
-            //----------------三大法人 only 3 years ago--------------------------------------------
-            downloader = new FutureInsDwner(new URL("https://www.taifex.com.tw/cht/3/futContractsDateDown"), storage);        //三大法人交易情形統計(區分各期貨契約)-依日期
-//            downloader.setStart(2014, 8, 22);
+            downloader = downloaderFactory.createFutureDwner(new URL("https://www.taifex.com.tw/cht/3/futDataDown"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
-//            //買賣權分計=>much more meaningful. Use this as TB_OP_INS
-            downloader = new OpInsDwner(new URL("https://www.taifex.com.tw/cht/3/callsAndPutsDateDown"), storage);       //三大法人交易情形統計(區分各選擇權契約)-依日期
-//            downloader.setStart(2014, 8, 22);
-            downloader.setStart(theYear, theMonth, 1);
-            downloader.setEnd(theYear, theMonth, today);
-            downloader.download();
-            //-----------------------------------------------------------------------------------
-
-            //----------------大額交易人---------------------------------------------------
-            downloader = new FutureBigTraderOiDwner(new URL("https://www.taifex.com.tw/cht/3/largeTraderFutDown"), storage);        //期貨大額交易人未沖銷部位結構表      2004/7/1
-//            downloader.setStart(2004, 7, 1);
+            downloader = downloaderFactory.createFutureInsDwner(new URL("https://www.taifex.com.tw/cht/3/futContractsDateDown"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
-            downloader = new OpBigTraderOiDwner(new URL("https://www.taifex.com.tw/cht/3/largeTraderOptDown"), storage);  //選擇權大額交易人      2004/7/1
-//            downloader.setStart(2004, 7, 1);
+            downloader = downloaderFactory.createOpInsDwner(new URL("https://www.taifex.com.tw/cht/3/callsAndPutsDateDown"), storage);
+            downloader.setStart(theYear, theMonth, 1);
+            downloader.setEnd(theYear, theMonth, today);
+            downloader.download();
+
+            downloader = downloaderFactory.createFutureBigTraderOiDwner(new URL("https://www.taifex.com.tw/cht/3/largeTraderFutDown"), storage);
+            downloader.setStart(theYear, theMonth, 1);
+            downloader.setEnd(theYear, theMonth, today);
+            downloader.download();
+
+            downloader = downloaderFactory.createOpBigTraderOiDwner(new URL("https://www.taifex.com.tw/cht/3/largeTraderOptDown"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
         } catch (MalformedURLException ex) {
             logger.error("{}", ex);
-
         }
-
     }
 }
