@@ -99,9 +99,6 @@ public class BorrowSellDwner extends AbstractDownloader {
         try {
             JSONArray data = rep.getJSONArray("data");
             IntStream.range(0, data.length()).forEach(idx -> {
-                // "股票代號", "股票名稱",
-                // "前日餘額", "賣出", "買進", "現券", "今日餘額", "限額",
-                // "前日餘額", "當日賣出", "當日還券", "當日調整", "當日餘額", "次一營業日可限額", "備註"
                 JSONArray e = data.getJSONArray(idx);
                 String symbol = e.getString(0);
                 String name = e.getString(1);

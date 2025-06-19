@@ -25,41 +25,45 @@ public class TwseRunner {
 
         logger.info("year:{} month:{} day:{}", theYear, theMonth, today);
 
+        runDownloads(twseStorage, theYear, theMonth, today);
+    }
+
+    // Method to allow setting a custom factory for testing
+    public static void setDownloaderFactory(DownloaderFactory factory) {
+        TwseRunner.downloaderFactory = factory;
+    }
+
+    private static DownloaderFactory downloaderFactory = new DefaultDownloaderFactory();
+
+    public static void runDownloads(Storage storage, int theYear, int theMonth, int today) {
+        Downloader downloader;
         try {
-            //----------------TWSE-----------------------------------------------
-            //----------------三大法人買賣超-----------------------------------------------
-            downloader = new TwseInsDwner(new URL("https://www.twse.com.tw/fund/BFI82U"), twseStorage);
+            downloader = downloaderFactory.createTwseInsDwner(new URL("https://www.twse.com.tw/fund/BFI82U"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
-            //----------------融資融券餘額----------------------------------------------------
-            downloader = new CreditTransDwner(new URL("https://www.twse.com.tw/exchangeReport/MI_MARGN"), twseStorage);
+            downloader = downloaderFactory.createCreditTransDwner(new URL("https://www.twse.com.tw/exchangeReport/MI_MARGN"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
-            //------------------借券賣出--------------------------------------------------------
-            downloader = new BorrowSellDwner(new URL("https://www.twse.com.tw/exchangeReport/TWT93U"), twseStorage);
+            downloader = downloaderFactory.createBorrowSellDwner(new URL("https://www.twse.com.tw/exchangeReport/TWT93U"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
-            //------------------歷史資料--------------------------------------------------------
-            downloader = new TwseDwner(new URL("https://www.twse.com.tw/indicesReport/MI_5MINS_HIST"), twseStorage);
+            downloader = downloaderFactory.createTwseDwner(new URL("https://www.twse.com.tw/indicesReport/MI_5MINS_HIST"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
 
-            //------------------交易量歷史資料--------------------------------------------------------
-            downloader = new TwseVolDwner(new URL("https://www.twse.com.tw/exchangeReport/FMTQIK"), twseStorage);
+            downloader = downloaderFactory.createTwseVolDwner(new URL("https://www.twse.com.tw/exchangeReport/FMTQIK"), storage);
             downloader.setStart(theYear, theMonth, 1);
             downloader.setEnd(theYear, theMonth, today);
             downloader.download();
         } catch (MalformedURLException ex) {
             logger.error("{}", ex);
-
         }
-
     }
 }
