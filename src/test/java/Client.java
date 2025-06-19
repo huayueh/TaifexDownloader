@@ -14,7 +14,6 @@ import java.net.URISyntaxException;
 /**
  * User: Harvey
  * Date: 2015/3/4
- * Time: 上午 11:01
  */
 public class Client {
     String url = "http://www.taifex.com.tw/chinese/3/dl_3_2_3_b.asp";
